@@ -1,0 +1,49 @@
+200 second test attaching the sys_read_bpf_prog to the __alloc_skb function
+
+Baseline
+
+Starting memcached benchmark using memtier_benchmark...
+Server: 127.0.0.1:11211
+Duration: 200 seconds
+Threads: 4
+Clients per thread: 10
+Write/Read Ratio: 1:10
+
+4         Threads
+10        Connections per thread
+200       Seconds
+
+
+ALL STATS
+============================================================================================================================
+Type         Ops/sec     Hits/sec   Misses/sec    Avg. Latency     p50 Latency     p99 Latency   p99.9 Latency       KB/sec 
+----------------------------------------------------------------------------------------------------------------------------
+Sets        30567.35          ---          ---         0.12137         0.09500         0.52700         0.88700      2086.22 
+Gets       305672.39      3120.01    302552.38         0.11961         0.09500         0.52700         0.87100      7916.57 
+Waits           0.00          ---          ---             ---             ---             ---             ---          --- 
+Totals     336239.74      3120.01    302552.38         0.11977         0.09500         0.52700         0.87900     10002.79 
+
+
+
+Test1
+
+Starting memcached benchmark using memtier_benchmark...
+Server: 127.0.0.1:11211
+Duration: 200 seconds
+Threads: 4
+Clients per thread: 10
+Write/Read Ratio: 1:10
+
+4         Threads
+10        Connections per thread
+200       Seconds
+
+
+ALL STATS
+============================================================================================================================
+Type         Ops/sec     Hits/sec   Misses/sec    Avg. Latency     p50 Latency     p99 Latency   p99.9 Latency       KB/sec 
+----------------------------------------------------------------------------------------------------------------------------
+Sets        28691.22          ---          ---         0.12909         0.10300         0.55100         0.93500      1958.18 
+Gets       286911.15      5203.32    281707.84         0.12742         0.10300         0.54300         0.92700      7568.14 
+Waits           0.00          ---          ---             ---             ---             ---             ---          --- 
+Totals     315602.37      5203.32    281707.84         0.12757         0.10300         0.54300         0.92700      9526.32 

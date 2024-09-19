@@ -77,6 +77,13 @@ int load_and_attach_bpf(const char *prog_name, const char *obj_file, struct bpf_
         return -1;
     }
 
+    // Load the eBPF program into the kernel
+    if (bpf_object__load(obj)) {
+        fprintf(stderr, "Error loading eBPF program\n");
+        bpf_object__close(obj);
+        return -1;
+    }
+
     // Find the eBPF program by function name
     prog = bpf_object__find_program_by_name(obj, prog_name);
     if (!prog) {
@@ -85,18 +92,10 @@ int load_and_attach_bpf(const char *prog_name, const char *obj_file, struct bpf_
         return -1;
     }
 
-    // Load the eBPF program into the kernel
-    if (bpf_object__load(obj)) {
-        fprintf(stderr, "Error loading eBPF program\n");
-        bpf_object__close(obj);
-        return -1;
-    }
-
     // Attach the program based on type (tracepoint, fentry, fexit, kprobe, kretprobe)
     if (strcmp(attach_type, "tracepoint") == 0) {
         *link = bpf_program__attach_tracepoint(prog, category, target);
     } else if (strcmp(attach_type, "fentry") == 0 || strcmp(attach_type, "fexit") == 0) {
-       // Inform the user to modify the SEC() section manually
         printf("Ensure that your eBPF program has the correct SEC() section for fentry or fexit hooks as libbpf does not support custom hooking.\n");
         printf("For example, use SEC(\"fentry/function_name\") for function entry and SEC(\"fexit/function_name\") for function exit.\n");
 
@@ -104,9 +103,9 @@ int load_and_attach_bpf(const char *prog_name, const char *obj_file, struct bpf_
         *link = bpf_program__attach(prog);
         
     } else if (strcmp(attach_type, "kprobe") == 0) {
-        *link = bpf_program__attach_kprobe(prog, false, target);  // kprobe, not kretprobe
+        *link = bpf_program__attach_kprobe(prog, false, target);
     } else if (strcmp(attach_type, "kretprobe") == 0) {
-        *link = bpf_program__attach_kprobe(prog, true, target);   // kretprobe
+        *link = bpf_program__attach_kprobe(prog, true, target);
     }
 
     if (libbpf_get_error(*link)) {

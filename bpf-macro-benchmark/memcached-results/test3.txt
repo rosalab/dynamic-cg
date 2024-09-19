@@ -1,0 +1,47 @@
+basic nesting with two printk bpfs
+
+
+Starting memcached benchmark using memtier_benchmark...
+Server: 127.0.0.1:11211
+Duration: 200 seconds
+Threads: 4
+Clients per thread: 10
+Write/Read Ratio: 1:10
+
+4         Threads
+10        Connections per thread
+200       Seconds
+
+
+ALL STATS
+============================================================================================================================
+Type         Ops/sec     Hits/sec   Misses/sec    Avg. Latency     p50 Latency     p99 Latency   p99.9 Latency       KB/sec 
+----------------------------------------------------------------------------------------------------------------------------
+Sets        29960.87          ---          ---         0.12388         0.07900         0.62300         1.07900      2044.83 
+Gets       299607.66     12268.19    287339.47         0.12200         0.07900         0.61500         1.07100      8316.11 
+Waits           0.00          ---          ---             ---             ---             ---             ---          --- 
+Totals     329568.52     12268.19    287339.47         0.12217         0.07900         0.61500         1.07100     10360.94 
+
+
+bpf
+
+Starting memcached benchmark using memtier_benchmark...
+Server: 127.0.0.1:11211
+Duration: 200 seconds
+Threads: 4
+Clients per thread: 10
+Write/Read Ratio: 1:10
+
+4         Threads
+10        Connections per thread
+200       Seconds
+
+
+ALL STATS
+============================================================================================================================
+Type         Ops/sec     Hits/sec   Misses/sec    Avg. Latency     p50 Latency     p99 Latency   p99.9 Latency       KB/sec 
+----------------------------------------------------------------------------------------------------------------------------
+Sets        21838.40          ---          ---         0.16812         0.11900         0.73500         1.21500      1490.47 
+Gets       218382.97      8965.81    209417.16         0.16653         0.11900         0.73500         1.20700      6063.00 
+Waits           0.00          ---          ---             ---             ---             ---             ---          --- 
+Totals     240221.37      8965.81    209417.16         0.16667         0.11900         0.73500         1.20700      7553.47 

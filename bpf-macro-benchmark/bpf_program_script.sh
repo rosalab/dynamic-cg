@@ -3,4 +3,4 @@
 
 cd ./bpf-programs
 
-eval './link.user tp/syscalls/sys_enter_getcwd tp.kern.o empty'
+eval './link.user fentry/__alloc_skb tp.kern.o empty'

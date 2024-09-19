@@ -3,7 +3,7 @@
 # Benchmark parameters
 SERVER="127.0.0.1"
 PORT="11211"
-DURATION="30"
+DURATION="50"
 THREADS="4"
 CLIENTS="10"
 RATIO="1:10"  # Ratio of write to read operations

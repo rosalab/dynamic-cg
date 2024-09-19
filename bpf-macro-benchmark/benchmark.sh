@@ -65,10 +65,7 @@ do
     baseline=$(eval "$executable_and_options")
     # RUN BASELINE
 
-     echo "$baseline" > "$output/baseline_$counter.txt"
-
-    # PROCESS RESULTS
-    # echo "$baseline" > "$output/baseline.txt"
+    echo "$baseline" > "$output/baseline_$counter.txt"
 
 done
 

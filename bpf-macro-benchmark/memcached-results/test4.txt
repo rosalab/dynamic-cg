@@ -1,0 +1,49 @@
+with the long running program nested inside
+baseline
+
+Starting memcached benchmark using memtier_benchmark...
+Server: 127.0.0.1:11211
+Duration: 100 seconds
+Threads: 4
+Clients per thread: 10
+Write/Read Ratio: 1:10
+
+4         Threads
+10        Connections per thread
+100       Seconds
+
+
+ALL STATS
+============================================================================================================================
+Type         Ops/sec     Hits/sec   Misses/sec    Avg. Latency     p50 Latency     p99 Latency   p99.9 Latency       KB/sec 
+----------------------------------------------------------------------------------------------------------------------------
+Sets        30462.66          ---          ---         0.12227         0.08700         0.58300         0.99100      2079.06 
+Gets       304624.98     12530.13    292094.85         0.12061         0.08700         0.57500         0.98300      8458.80 
+Waits           0.00          ---          ---             ---             ---             ---             ---          --- 
+Totals     335087.64     12530.13    292094.85         0.12076         0.08700         0.57500         0.98300     10537.87 
+
+
+nested bpf
+
+Benchmark completed.
+root@q:/linux-dev-env/bpf-macro-benchmark/memcached_out# cat result_1.txt 
+Starting memcached benchmark using memtier_benchmark...
+Server: 127.0.0.1:11211
+Duration: 100 seconds
+Threads: 4
+Clients per thread: 10
+Write/Read Ratio: 1:10
+
+4         Threads
+10        Connections per thread
+100       Seconds
+
+
+ALL STATS
+============================================================================================================================
+Type         Ops/sec     Hits/sec   Misses/sec    Avg. Latency     p50 Latency     p99 Latency   p99.9 Latency       KB/sec 
+----------------------------------------------------------------------------------------------------------------------------
+Sets         1842.69          ---          ---         1.99167         1.80700         4.99100         6.39900       125.76 
+Gets        18424.96       738.98     17685.98         1.99328         1.80700         4.95900         6.39900       510.46 
+Waits           0.00          ---          ---             ---             ---             ---             ---          --- 
+Totals      20267.65       738.98     17685.98         1.99313         1.80700         4.95900         6.39900       636.21 

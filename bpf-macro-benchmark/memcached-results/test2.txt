@@ -1,0 +1,45 @@
+Starting memcached benchmark using memtier_benchmark...
+Server: 127.0.0.1:11211
+Duration: 600 seconds
+Threads: 4
+Clients per thread: 10
+Write/Read Ratio: 1:10
+
+4         Threads
+10        Connections per thread
+600       Seconds
+
+
+ALL STATS
+============================================================================================================================
+Type         Ops/sec     Hits/sec   Misses/sec    Avg. Latency     p50 Latency     p99 Latency   p99.9 Latency       KB/sec 
+----------------------------------------------------------------------------------------------------------------------------
+Sets        24111.20          ---          ---         0.15333         0.12700         0.63100         1.35100      1645.60 
+Gets       241111.60      5954.45    235157.15         0.15086         0.12700         0.62300         1.33500      6455.66 
+Waits           0.00          ---          ---             ---             ---             ---             ---          --- 
+Totals     265222.79      5954.45    235157.15         0.15108         0.12700         0.62300         1.34300      8101.25 
+
+
+test bpf
+
+Starting memcached benchmark using memtier_benchmark...
+Server: 127.0.0.1:11211
+Duration: 600 seconds
+Threads: 4
+Clients per thread: 10
+Write/Read Ratio: 1:10
+
+4         Threads
+10        Connections per thread
+600       Seconds
+
+
+ALL STATS
+============================================================================================================================
+Type         Ops/sec     Hits/sec   Misses/sec    Avg. Latency     p50 Latency     p99 Latency   p99.9 Latency       KB/sec 
+----------------------------------------------------------------------------------------------------------------------------
+Sets        24460.47          ---          ---         0.15092         0.11100         0.67900         1.29500      1669.43 
+Gets       244604.33      9840.26    234764.06         0.14846         0.11100         0.67100         1.28700      6778.80 
+Waits           0.00          ---          ---             ---             ---             ---             ---          --- 
+Totals     269064.79      9840.26    234764.06         0.14869         0.11100         0.67900         1.28700      8448.24 
+
