@@ -1,3 +1,3 @@
 *.o
 /test_output/*
-/trace/*
+/trace/*.txt

@@ -3,50 +3,50 @@
 # Benchmark parameters
 SERVER="127.0.0.1"
 PORT="11211"
-DURATION="1"        # Duration in seconds
+DURATION="30"        # Duration in seconds
 THREADS="4"
 CLIENTS="10"
 RATIO="1:10"         # Write/Read ratio
 
-# Start memcached in the background and get its PID
+FTRACE_PATH="/sys/kernel/debug/tracing"
+TRACE_FILE="${FTRACE_PATH}/trace"
+
 echo "Starting memcached..."
 memcached -u nobody -d -m 64 -p $PORT
-# memcached -u nobody -d -m 64 -p 11211
+MEMCACHED_PID=$(pgrep memcached | head -n 1)
 
-# trace-cmd record -p function -q -c -F memcached -u nobody -d -m 64 -p 11211
+# Verify memcached is running and bound to the port
+if lsof -i :$PORT > /dev/null; then
+    echo "memcached is running and bound to port $PORT"
+else
+    echo "memcached failed to bind to port $PORT"
+    exit 1
+fi
 
-# trace-cmd record -p function -q -c -F memcached -u nobody -d -p $PORT
+echo "Setting up ftrace..."
+echo function_graph > ${FTRACE_PATH}/current_tracer
+echo $MEMCACHED_PID > ${FTRACE_PATH}/set_ftrace_pid
+echo 1 > ${FTRACE_PATH}/tracing_on
 
-# MEMCACHED_PID=$!
-
-# Wait to ensure memcached is up
-# sleep 5
-
-# Start tracing using trace-cmd for the specific memcached PID
-# echo "Starting trace-cmd on memcached PID $MEMCACHED_PID..."
-# trace-cmd record -p function -q -c -P $MEMCACHED_PID &
-# 211
-# trace-cmd record -p function -q -c -P 211
-
-trace-cmd reset
-
-trace-cmd start -p function_graph -b 10000
+# Clear previous trace logs
+echo > ${TRACE_FILE}
 
 # Run the benchmark
 echo "Running memtier_benchmark..."
-/memtier_benchmark/memtier_benchmark --server=$SERVER --port=$PORT \
+memtier_benchmark --server=$SERVER --port=$PORT \
     --protocol=memcache_text --threads=$THREADS --clients=$CLIENTS \
     --ratio=$RATIO --test-time=$DURATION
 
-trace-cmd stop
+# Stop ftrace
+echo 0 > ${FTRACE_PATH}/tracing_on
 
-trace-cmd extract
+echo "Saving trace data..."
+cat ${TRACE_FILE} > /linux/memcached_ftrace.txt
 
-# fg 
+# Clean up ftrace
+echo > ${FTRACE_PATH}/trace
+echo > ${FTRACE_PATH}/set_ftrace_pid
+echo "ftrace stopped and trace saved to /linux/memcached_ftrace.txt."
 
-# Process the trace data
-# echo "Processing trace data..."
-trace-cmd report > /linux/memcached_trace2.txt
-
-# echo "Benchmark and tracing completed."
-# echo "Trace data saved to memcached_trace2.txt"
+kill $MEMCACHED_PID
+echo "memcached stopped."
