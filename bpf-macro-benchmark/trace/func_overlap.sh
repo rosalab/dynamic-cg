@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # bash script expects two txt files with a specific format outputted by another script called trace_parser
 # example format looks like so:
 # 19761 __rcu_read_unlock
@@ -54,25 +53,25 @@ for func_name in "${!functions1[@]}"; do
   if [[ -n "${functions2["$func_name"]}" ]]; then
     shared_functions+=("$func_name")
 
-    norm_count1=$(echo "scale=3; ${functions1["$func_name"]} / $total_count1 * 100" | bc)
-    norm_count2=$(echo "scale=3; ${functions2["$func_name"]} / $total_count2 * 100" | bc)
+    norm_count1=$(echo "scale=7; (${functions1["$func_name"]} / $total_count1) * 100" | bc)
+    norm_count2=$(echo "scale=7; (${functions2["$func_name"]} / $total_count2) * 100" | bc)
     
     min_norm_count=$(echo "$norm_count1 $norm_count2" | awk '{print ($1 < $2) ? $1 : $2}')
 
-    total_shared_percentage=$(echo "scale=3; $total_shared_percentage + $min_norm_count" | bc)
+    total_shared_percentage=$(echo "scale=5; $total_shared_percentage + $min_norm_count" | bc)
   fi
 done
 
 # Sort shared functions by the overlap in frequencies (biggest overlap)
 for func_name in "${shared_functions[@]}"; do
-  norm_count1=$(echo "scale=3; ${functions1["$func_name"]} / $total_count1 * 100" | bc)
-  norm_count2=$(echo "scale=3; ${functions2["$func_name"]} / $total_count2 * 100" | bc)
+  norm_count1=$(echo "scale=7; (${functions1["$func_name"]} / $total_count1) * 100" | bc)
+  norm_count2=$(echo "scale=7; (${functions2["$func_name"]} / $total_count2) * 100" | bc)
   
   min_norm_count=$(echo "$norm_count1 $norm_count2" | awk '{print ($1 < $2) ? $1 : $2}')
   
   echo "$min_norm_count% overlap in $func_name"
 
-done | sort -n -r | head -10
+done | sort -n -r
 
 total_functions1=${#functions1[@]}
 total_functions2=${#functions2[@]}

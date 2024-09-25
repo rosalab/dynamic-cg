@@ -23,7 +23,7 @@ echo "Write/Read Ratio: $RATIO"
 echo
 
 # Run memtier_benchmark
-/memtier_benchmark/memtier_benchmark --server=$SERVER --port=$PORT \
+memtier_benchmark --server=$SERVER --port=$PORT \
     --protocol=memcache_text --threads=$THREADS --clients=$CLIENTS \
     --ratio=$RATIO --test-time=$DURATION
 
