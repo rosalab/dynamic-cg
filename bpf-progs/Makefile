@@ -1,9 +1,5 @@
 SOURCES := $(wildcard *.kern.c)
 FILES := $(SOURCES:.c=.o)
-MAP_FINE_SRC := $(wildcard map-fine/*.kern.c)
-MAP_FINE_OBJ := $(MAP_FINE_SRC:.c=.o)
-MAP_FINE_USER_SRC := $(wildcard map-fine/*.user.c)
-MAP_FINE_USER_OBJ := $(MAP_FINE_USER_SRC:.c=)
 USER_SRC := $(wildcard *.user.c)
 USER := $(USER_SRC:.c=)
 BPF-CLANG := clang

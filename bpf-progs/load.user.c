@@ -36,7 +36,12 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    bpf_program__attach(program);
+    struct bpf_link *link = bpf_program__attach(program);
+    if (libbpf_get_error(link)) {
+        printf("Attachment failed with error %ld\n", libbpf_get_error(link));
+        return 0;
+    }
+
     printf("Attachment id done\n");
 
     while (1) {
