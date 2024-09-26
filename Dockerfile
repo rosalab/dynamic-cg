@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 as Linux-builder
+FROM ubuntu:24.04 AS linux-builder
 
 ENV LINUX=/linux 
 
