@@ -61,7 +61,9 @@ int main(int argc, char *argv[])
 		printf("Failed to fetch bpf prog info with err %d\n", err);
 		return 0;
 	}
-	printf("%lld\t%lld\n",info.run_time_ns - prev_run_time_ns, info.run_cnt - prev_run_cnt);
+	__u64 curr_run_cnt = info.run_cnt - prev_run_cnt;
+	__u64 per_run_time_ns = (info.run_time_ns - prev_run_time_ns) / curr_run_cnt;
+	printf("%lld\t%lld\n", per_run_time_ns, curr_run_cnt);
 	prev_run_time_ns = info.run_time_ns;
 	prev_run_cnt = info.run_cnt;
 	sleep(1);

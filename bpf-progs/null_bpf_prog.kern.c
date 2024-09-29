@@ -3,6 +3,7 @@
 #include <linux/types.h>
 #include <bpf/bpf_helpers.h>
 
+// print test
 SEC("fentry/__x64_sys_socket")
 int trigger_bpf_prog(void *ctx) {
     bpf_printk("Triggered socket syscall\n");
