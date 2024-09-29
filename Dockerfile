@@ -25,3 +25,8 @@ RUN ./llvm.sh 19
 RUN ln -s /usr/bin/clang-19 /usr/bin/clang
 RUN ln -s /usr/bin/clang++-19 /usr/bin/clang++
 RUN ln -s /usr/bin/ld.lld-19 /usr/bin/ld.lld
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y curl
+
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN cargo install cross

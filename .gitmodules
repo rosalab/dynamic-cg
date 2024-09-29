@@ -1,3 +1,6 @@
 [submodule "linux"]
 	path = linux
 	url = git@github.com:rosalab/linux.git
+[submodule "bpftop-repo"]
+	path = bpftop-repo
+	url = git@github.com:Netflix/bpftop.git
