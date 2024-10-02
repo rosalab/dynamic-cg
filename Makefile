@@ -21,15 +21,6 @@ qemu-run:
 	-it runtime-dev:latest \
 	/linux-dev-env/q-script/yifei-q -s
 
-qemu-run-gdb: 
-	docker run --privileged --rm \
-	--device=/dev/kvm:/dev/kvm --device=/dev/net/tun:/dev/net/tun \
-	-v ${BASE_PROJ}:/linux-dev-env -v ${LINUX}:/linux \
-	-w /linux \
-	-p 127.0.0.1:${SSH_PORT}:52222 \
-	-p 127.0.0.1:1234:1234 \
-	-it runtime:latest \
-	/linux-dev-env/q-script/yifei-q -s
 
 # connect running qemu by ssh
 qemu-ssh:
