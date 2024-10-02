@@ -4,6 +4,7 @@
 
 SEC("xdp")
 int trigger_xdp_prog(struct xdp_md *ctx) {
+    bpf_printk("triggered\n");
     return XDP_PASS;
 }
 
