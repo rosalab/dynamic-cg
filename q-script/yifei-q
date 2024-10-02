@@ -258,6 +258,7 @@ eval \$(resize)
 EOF
 
 	cd linux-dev-env 
+    curl -fLJ https://github.com/Netflix/bpftop/releases/latest/download/bpftop-x86_64-unknown-linux-gnu -o bpftop && chmod +x bpftop
 
 	if [ -n "$ARGS" ]; then
 		say non-interactive bash script

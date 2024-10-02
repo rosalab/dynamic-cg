@@ -5,6 +5,15 @@
 #include <linux/if_ether.h>
 #include <linux/ip.h>
 
+#define MAX_ENTRIES 100000
+
+struct { 
+    __uint(type, BPF_MAP_TYPE_HASH);
+	__type(key, __be32);
+	__type(value, __u64);
+	__uint(max_entries, MAX_ENTRIES);
+} ip_map SEC(".maps");
+
 SEC("xdp")
 int trigger_xdp_prog(struct xdp_md *ctx) 
 {
@@ -28,17 +37,36 @@ int trigger_xdp_prog(struct xdp_md *ctx)
     }
     
     __be32 src_ip = ip->saddr;
-    __be32 dst_ip = ip->daddr;
+   // __be32 dst_ip = ip->daddr;
 
-    bpf_printk("protocol: %u", ip->protocol);
-    bpf_printk("src ip addr: %u.%u.%u.%u\n", bpf_ntohs(src_ip) >> 24 & 0xFF,
-                                             (bpf_ntohs(src_ip) >> 16) & 0xFF,
-                                             (bpf_ntohs(src_ip) >> 8) & 0xFF,
-                                             bpf_ntohs(src_ip) & 0xFF);
-    bpf_printk("dst ip addr: %u.%u.%u.%u\n", bpf_ntohs(dst_ip) >> 24 & 0xFF,
-                                             (bpf_ntohs(dst_ip) >> 16) & 0xFF,
-                                             (bpf_ntohs(dst_ip) >> 8) & 0xFF,
-                                             bpf_ntohs(dst_ip) & 0xFF);
+   // bpf_printk("protocol: %u", ip->protocol);
+   // bpf_printk("src ip addr: %u.%u.%u.%u\n", bpf_ntohs(src_ip) >> 8 & 0xFF,
+   //                                          bpf_ntohs(src_ip) & 0xFF,
+   //                                          bpf_ntohs(src_ip >> 16) >> 8 & 0xFF,
+   //                                          bpf_ntohs(src_ip >> 16) & 0xFF);
+   // bpf_printk("dst ip addr: %u.%u.%u.%u\n", bpf_ntohs(dst_ip) >> 8 & 0xFF,
+   //                                          bpf_ntohs(dst_ip) & 0xFF,
+   //                                          bpf_ntohs(dst_ip >> 16) >> 8 & 0xFF,
+   //                                          bpf_ntohs(dst_ip >> 16) & 0xFF);
+
+    __u64 *val = bpf_map_lookup_elem(&ip_map, &src_ip);
+
+    if (!val) {
+        __u64 tmp = 1;
+        int ret = bpf_map_update_elem(&ip_map, &src_ip, &tmp, BPF_ANY);
+        if (ret < 0) {
+            bpf_printk("Map update failed\n");
+        }
+        return XDP_PASS;
+    }
+
+    __sync_fetch_and_add(val, 1);
+
+//    bpf_printk("src ip addr: %u.%u.%u.%u and val is %lu\n", bpf_ntohs(src_ip) >> 8 & 0xFF,
+//                                             bpf_ntohs(src_ip) & 0xFF,
+//                                             bpf_ntohs(src_ip >> 16) >> 8 & 0xFF,
+//                                             bpf_ntohs(src_ip >> 16) & 0xFF, *val);
+
 	return XDP_PASS;
 }
 
