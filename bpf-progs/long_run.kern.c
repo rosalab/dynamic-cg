@@ -2,7 +2,7 @@
 #include <linux/types.h>
 #include <bpf/bpf_helpers.h>
 
-#define LEFT_SHIFT 5
+#define LEFT_SHIFT 2
 
 static int runner3(void *ctx) {
     //bpf_printk("runner: Inside 3 loop function\n");

@@ -52,7 +52,7 @@ int trigger_xdp_prog(struct xdp_md *ctx)
     __u64 *val = bpf_map_lookup_elem(&ip_map, &src_ip);
 
     if (!val) {
-        __u64 tmp = 1;
+        __u64 tmp = 0;
         int ret = bpf_map_update_elem(&ip_map, &src_ip, &tmp, BPF_ANY);
         if (ret < 0) {
             bpf_printk("Map update failed\n");
