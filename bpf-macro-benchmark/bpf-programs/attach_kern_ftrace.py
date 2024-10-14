@@ -4,6 +4,7 @@ import subprocess
 # Paths (adjust if necessary)
 KERN_FUNC_FILE = "kern_func.txt"
 OUTPUT_FILE = "generic.ftrace.kern.c"
+OBJ_FILE = "generic.ftrace.kern.o"
 MAKE_CMD = "make"
 LINK_USER_EXEC = "./link.user"
 
@@ -14,11 +15,11 @@ C_TEMPLATE = """
 
 char LICENSE[] SEC("license") = "Dual BSD/GPL";
 
-SEC("ftrace")
+SEC("fentry/{function}")
 int {function}(void *ctx)
-{
+{{
     return 0;
-}
+}}
 """
 
 def read_kern_func_file(filepath):
@@ -27,6 +28,7 @@ def read_kern_func_file(filepath):
     """
     with open(filepath, 'r') as file:
         functions = [line.strip() for line in file.readlines() if line.strip()]
+    print(functions)
     return functions
 
 def generate_c_file(functions, output_filepath):
@@ -35,8 +37,9 @@ def generate_c_file(functions, output_filepath):
     """
     with open(output_filepath, 'w') as f:
         # Generate one hookpoint for each function in kern_func.txt
-        for func in functions:
-            f.write(C_TEMPLATE.format(function=func))
+        # for func in functions:
+        func = functions[0]
+        f.write(C_TEMPLATE.format(function=func))
     print(f"Generated {output_filepath}")
 
 def run_make():
@@ -53,13 +56,15 @@ def run_link_user(functions):
     """
     Calls the link.user executable for each function with the correct parameters.
     """
-    for func in functions:
-        attach_cmd = [LINK_USER_EXEC, f"ftrace/{func}", OUTPUT_FILE, func]
-        try:
-            subprocess.run(attach_cmd, check=True)
-            print(f"Attached function {func} successfully.")
-        except subprocess.CalledProcessError as e:
-            print(f"Error attaching function {func}: {e}")
+    # for func in functions:
+    func = functions[0]
+
+    attach_cmd = [LINK_USER_EXEC, f"fentry/{func}", OBJ_FILE, func]
+    try:
+        subprocess.run(attach_cmd, check=True)
+        print(f"Attached function {func} successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error attaching function {func}: {e}")
 
 def main():
     # Step 1: Read the kernel functions from kern_func.txt
