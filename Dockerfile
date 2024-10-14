@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 AS testdocker
+FROM ubuntu:24.04 AS egor-linux-dev
 
 ENV LINUX=/linux 
 
@@ -64,29 +64,29 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y git build-es
 
 # Create necessary directories
 # RUN mkdir -p /downloads_nginx /memcached/build /memcached/extract /opt/venv
-RUN mkdir -p /downloads_nginx /opt/venv
+# RUN mkdir -p /downloads_nginx /opt/venv
 
 # Download, extract, configure, and install NGINX
-RUN cd /downloads_nginx \
-    && wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
-    && tar xvzf ./nginx-${NGINX_VERSION}.tar.gz \
-    && cd nginx-${NGINX_VERSION} \
-    && ./configure \
-        --sbin-path=/usr/sbin/nginx \
-        --conf-path=/etc/nginx/nginx.conf \
-        --pid-path=/var/run/nginx.pid \
-        --lock-path=/var/lock/nginx.lock \
-        --with-http_ssl_module \
-        --with-pcre \
-    && make \
-    && make install
+# RUN cd /downloads_nginx \
+#     && wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
+#     && tar xvzf ./nginx-${NGINX_VERSION}.tar.gz \
+#     && cd nginx-${NGINX_VERSION} \
+#     && ./configure \
+#         --sbin-path=/usr/sbin/nginx \
+#         --conf-path=/etc/nginx/nginx.conf \
+#         --pid-path=/var/run/nginx.pid \
+#         --lock-path=/var/lock/nginx.lock \
+#         --with-http_ssl_module \
+#         --with-pcre \
+#     && make \
+#     && make install
 
 # Install wrk benchmarking tool
-RUN git clone https://github.com/wg/wrk.git /wrk \
-    && cd /wrk \
-    && make -j $NUM_CPU_CORES \
-    && cp wrk /usr/local/bin/ \
-    && rm -rf /wrk
+# RUN git clone https://github.com/wg/wrk.git /wrk \
+#     && cd /wrk \
+#     && make -j $NUM_CPU_CORES \
+#     && cp wrk /usr/local/bin/ \
+#     && rm -rf /wrk
 
 
 # Install trace-cmd
@@ -103,16 +103,16 @@ RUN apt-get install -y trace-cmd
 
 
 # Install memtier_benchmark
-RUN mkdir -p /downloads_memtier \
-    && cd /downloads_memtier \
-    && git clone https://github.com/RedisLabs/memtier_benchmark.git \
-    && cd memtier_benchmark \
-    && autoreconf -ivf \
-    && ./configure --prefix=/usr/local \
-    && make \
-    && make install \
-    && cp /usr/local/bin/memtier_benchmark /usr/bin/memtier_benchmark \
-    && rm -rf /downloads_memtier
+# RUN mkdir -p /downloads_memtier \
+#     && cd /downloads_memtier \
+#     && git clone https://github.com/RedisLabs/memtier_benchmark.git \
+#     && cd memtier_benchmark \
+#     && autoreconf -ivf \
+#     && ./configure --prefix=/usr/local \
+#     && make \
+#     && make install \
+#     && cp /usr/local/bin/memtier_benchmark /usr/bin/memtier_benchmark \
+#     && rm -rf /downloads_memtier
 
 
 # Download and extract Geekbench
@@ -133,7 +133,7 @@ RUN mkdir -p /downloads_memtier \
 
 
 # Expose necessary ports
-EXPOSE 11211 80 6379 8089
+# EXPOSE 11211 80 6379 8089
 
 # Start services (Redis and NGINX)
 # CMD ["sh", "-c", "nginx -g 'daemon off;'"]

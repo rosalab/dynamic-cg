@@ -8,4 +8,4 @@ fi
 
 input_file="$1"
 
-cat $input_file | awk '{print $4}' | sort | uniq -c | sort -nr
+cat $input_file | grep : | awk '{print $4}' | sort | uniq -c | sort -nr

@@ -62,14 +62,16 @@ for func_name in "${!functions1[@]}"; do
   fi
 done
 
+printf "%-16s %-16s | %s\n" "$file1" "$file2" "Overlap in function"
+
 # Sort shared functions by the overlap in frequencies (biggest overlap)
 for func_name in "${shared_functions[@]}"; do
   norm_count1=$(echo "scale=7; (${functions1["$func_name"]} / $total_count1) * 100" | bc)
   norm_count2=$(echo "scale=7; (${functions2["$func_name"]} / $total_count2) * 100" | bc)
   
-  min_norm_count=$(echo "$norm_count1 $norm_count2" | awk '{print ($1 < $2) ? $1 : $2}')
+  # min_norm_count=$(echo "$norm_count1 $norm_count2" | awk '{print ($1 < $2) ? $1 : $2}')
   
-  echo "$min_norm_count% overlap in $func_name"
+  printf "%-16.4f %-16.4f | %s\n" "$norm_count1" "$norm_count2" "$func_name"
 
 done | sort -n -r
 
