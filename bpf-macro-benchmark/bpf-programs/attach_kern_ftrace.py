@@ -1,4 +1,5 @@
 import os
+import random
 import subprocess
 
 # Paths (adjust if necessary)
@@ -7,6 +8,8 @@ OUTPUT_FILE = "generic.ftrace.kern.c"
 OBJ_FILE = "generic.ftrace.kern.o"
 MAKE_CMD = "make"
 LINK_USER_EXEC = "./link.user"
+SYS_MAP_PATH = '/lib/modules/6.11.0-rc5/build/System.map'
+SEED = 6722
 
 # Template for the C file
 C_TEMPLATE = """
@@ -28,7 +31,7 @@ def read_kern_func_file(filepath):
     """
     with open(filepath, 'r') as file:
         functions = [line.strip() for line in file.readlines() if line.strip()]
-    print(functions)
+    # print(functions)
     return functions
 
 def generate_c_file(functions, output_filepath):
@@ -66,8 +69,26 @@ def run_link_user(functions):
     except subprocess.CalledProcessError as e:
         print(f"Error attaching function {func}: {e}")
 
+def read_system_map(filepath):
+    """
+    Reads the System.map file and extracts lines containing function addresses.
+    """
+    with open(filepath, 'r') as file:
+        lines = file.readlines()
+
+    # Filter lines containing 'T' which indicates a global function (in the text segment)
+    functions = [line.split()[-1] for line in lines if ' T ' in line]
+    return functions
+
+def select_random_functions(functions, seed, count=30):
+    """
+    Selects `count` random functions from the list using a user-defined seed.
+    """
+    random.seed(seed)  # Set the seed for reproducibility
+    return random.sample(functions, count)
+
 def main():
-    # Step 1: Read the kernel functions from kern_func.txt
+
     functions = read_kern_func_file(KERN_FUNC_FILE)
 
     # Step 2: Generate the C file

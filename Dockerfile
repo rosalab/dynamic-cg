@@ -91,7 +91,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y git build-es
 
 # Install trace-cmd
 RUN apt-get install -y trace-cmd
-
 # Download and build libmemcached
 # RUN wget https://github.com/awesomized/libmemcached/archive/refs/heads/v1.x.zip -P /memcached && \
 #     unzip /memcached/v1.x.zip -d /memcached/extract && \
