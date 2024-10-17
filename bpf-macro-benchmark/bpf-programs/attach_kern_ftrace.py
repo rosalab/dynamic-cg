@@ -9,7 +9,7 @@ OBJ_FILE = "generic.ftrace.kern.o"
 MAKE_CMD = "make"
 LINK_USER_EXEC = "./link.user"
 SYS_MAP_PATH = '/lib/modules/6.11.0-rc5/build/System.map'
-SEED = 6722
+SEED = 6721
 
 # Template for the C file
 C_TEMPLATE = """
@@ -19,7 +19,7 @@ C_TEMPLATE = """
 char LICENSE[] SEC("license") = "Dual BSD/GPL";
 
 SEC("fentry/{function}")
-int {function}(void *ctx)
+int special_bpf_{function}(void *ctx)
 {{
     return 0;
 }}
@@ -62,7 +62,7 @@ def run_link_user(functions):
     # for func in functions:
     func = functions[0]
 
-    attach_cmd = [LINK_USER_EXEC, f"fentry/{func}", OBJ_FILE, func]
+    attach_cmd = [LINK_USER_EXEC, f"fentry/{func}", OBJ_FILE, f"special_bpf_{func}"]
     try:
         subprocess.run(attach_cmd, check=True)
         print(f"Attached function {func} successfully.")
