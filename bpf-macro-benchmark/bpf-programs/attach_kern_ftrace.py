@@ -1,13 +1,14 @@
 import os
 import random
 import subprocess
+import time
 
 # Paths (adjust if necessary)
 KERN_FUNC_FILE = "kern_func.txt"
 OUTPUT_FILE = "generic.ftrace.kern.c"
 OBJ_FILE = "generic.ftrace.kern.o"
 MAKE_CMD = "make"
-LINK_USER_EXEC = "./link.user"
+# LINK_USER_EXEC = "./link.user"
 SYS_MAP_PATH = '/lib/modules/6.11.0-rc5/build/System.map'
 SEED = 6721
 
@@ -19,15 +20,15 @@ C_TEMPLATE = """
 char LICENSE[] SEC("license") = "Dual BSD/GPL";
 
 SEC("fentry/{function}")
-int special_bpf_{function}(void *ctx)
+int special_{function}(void *ctx)
 {{
     return 0;
 }}
 """
 
-def read_kern_func_file(filepath):
+def read_file(filepath):
     """
-    Reads the kern_func.txt file and returns the list of kernel functions.
+    Reads a newline serparated file and puts all elements into a list
     """
     with open(filepath, 'r') as file:
         functions = [line.strip() for line in file.readlines() if line.strip()]
@@ -55,19 +56,48 @@ def run_make():
     except subprocess.CalledProcessError as e:
         print(f"Error occurred during make: {e}")
 
-def run_link_user(functions):
+def run_link_user(functions, xdp_programs):
     """
     Calls the link.user executable for each function with the correct parameters.
+    Also, attaches the xdp program taken from a list and runs it
     """
     # for func in functions:
     func = functions[0]
+    xdp = xdp_programs[0]
 
-    attach_cmd = [LINK_USER_EXEC, f"fentry/{func}", OBJ_FILE, f"special_bpf_{func}"]
+    attach_cmd = ["./link.user", f"fentry/{func}", OBJ_FILE, f"special_{func}"]
+    run_xdp_cmd = ["./load_test.user", xdp]
+
     try:
         subprocess.run(attach_cmd, check=True)
         print(f"Attached function {func} successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error attaching function {func}: {e}")
+
+    print("RUNNING XDP")
+    time.sleep(2)
+
+    try:
+        subprocess.run(run_xdp_cmd, check=True)
+        print(f"Ran and attached {xdp} successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error running {xdp}: {e}")
+
+    time.sleep(2)
+    print("DONE RUNNING XDP")
+
+    print("DETACHING BPF PROGRAMS")
+    detatch_bpf(func)
+
+def detatch_bpf(pinned):
+
+    detatch_cmd = ["rm", "-r", f"/sys/fs/bpf/fentry_special_{pinned}"]
+
+    try:
+        subprocess.run(detatch_cmd, check=True)
+        print(f"Detached bpf program correctly")
+    except subprocess.CalledProcessError as e:
+        print(f"Could not detatch")
 
 def read_system_map(filepath):
     """
@@ -89,7 +119,9 @@ def select_random_functions(functions, seed, count=30):
 
 def main():
 
-    functions = read_kern_func_file(KERN_FUNC_FILE)
+    # Step 1: read files
+    functions = read_file(KERN_FUNC_FILE)
+    xdp_programs = read_file("xdp_progs.txt")
 
     # Step 2: Generate the C file
     generate_c_file(functions, OUTPUT_FILE)
@@ -98,7 +130,7 @@ def main():
     run_make()
 
     # Step 4: Run the link.user executable to attach the eBPF program
-    run_link_user(functions)
+    run_link_user(functions, xdp_programs)
 
 if __name__ == "__main__":
     main()
