@@ -284,8 +284,8 @@ SSH=n
 CMDLINE=""
 QEMUARG=""
 
-NRCPU=4
-MEMORY=2048
+NRCPU=12
+MEMORY=16384
 
 while getopts "hgmsk:c:a:H:N:M:q:" opt; do
 	case $opt in

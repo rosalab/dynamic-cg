@@ -54,6 +54,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y git build-es
     qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon xterm attr busybox openssh-server \
     iputils-ping kmod
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3-docutils
 
 # RUN apt-get update && \
 #     apt-get install -y curl && \
@@ -90,7 +91,14 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y git build-es
 
 
 # Install trace-cmd
-RUN apt-get install -y trace-cmd
+RUN apt-get install -y trace-cmd pahole lld tcpdump
+# linux-tools-6.11.0-rc5 
+
+RUN apt-get install -y linux-tools-common linux-tools-generic libreadline-dev
+
+RUN apt-get update -y
+
+
 # Download and build libmemcached
 # RUN wget https://github.com/awesomized/libmemcached/archive/refs/heads/v1.x.zip -P /memcached && \
 #     unzip /memcached/v1.x.zip -d /memcached/extract && \

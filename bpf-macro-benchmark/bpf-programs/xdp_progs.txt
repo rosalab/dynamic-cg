@@ -1,2 +1,1 @@
-xdping.kern.o
-xpd_null.kern.o
+test_xdping.sh
