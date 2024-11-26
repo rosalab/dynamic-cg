@@ -147,3 +147,9 @@ In the q-script you must append a new rule.
 Find the line that starts with `"net += -netdev user..."`.
 Then at the end of the line add the text ```"hostfwd=tcp::DOCKER_PORT-:QEMU_PORT"```
 
+
+```
+scp -P 50004 -O root@127.0.0.1:/var/log/system_healthcheck.log .
+
+scp rahult@miles.cs.vt.edu:/home/rahult/linux-dev-env/system_healthcheck.log /Users/rahul/Documents/os/
+```
