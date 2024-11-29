@@ -62,7 +62,7 @@ host() {
 	[ "$SSH" = "y" ] && opts+=" -s"
 
 	cmdline+=" rootfstype=9p"
-	cmdline+=" rootflags=version=9p2000.L,trans=virtio,msize=104857600,access=any"
+	cmdline+=" rootflags=version=9p2000.L,trans=virtio,msize=104857600,access=any,rw"
 	cmdline+=" ro"
 	cmdline+=" nokaslr"
 	cmdline+=" $CMDLINE"

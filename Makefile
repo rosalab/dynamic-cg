@@ -41,8 +41,15 @@ kernel:
 linux-clean:
 	docker run --rm -v ${LINUX}:/linux -w /linux runtime-dev make distclean
 
+BASE_PROJ := $(shell pwd)
+
 enter-docker:
-	docker run --rm -v ${BASE_PROJ}:/linux-dev-env -w /linux-dev-env -it runtime-dev /bin/bash
+	docker run --rm \
+		--privileged \
+		--ulimit memlock=-1:-1 \
+		-v ${BASE_PROJ}:/linux-dev-env \
+		-w /linux-dev-env \
+		-it runtime-dev /bin/bash
 
 libbpf:
 	docker run --rm -v ${LINUX}:/linux -w /linux/tools/lib/bpf runtime-dev make -j`nproc`
